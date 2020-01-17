@@ -35,7 +35,7 @@ let schema = {
 
 main = (login,password)=>{
   const result = excelToJson({
-    sourceFile: '../listExcel/list.xlsx',
+    sourceFile: './listExcel/list.xlsx',
 });
 
 result.Sheet1.forEach((item)=>{
