@@ -16,7 +16,7 @@ let schema = {
     properties: {
       login: {
         pattern: /^[a-zA-Z\s\-]+$/,
-        message: 'Name must be only letters, spaces, or dashes',
+        message: 'Name must be only letters',
         required: true,
       },
       password: {
@@ -42,9 +42,14 @@ result.Sheet1.forEach((item)=>{
   meterList.push(item.A.toString());
 });
 
+const percent = (A , B) =>{
+  let result = (B*100)/A;
+  console.log(`${result}%`)
+}
+
 const time = (string , start , stop)=>{
-  var currentDate = `${string} ${new Date().toUTCString()}`;
-  console.log(currentDate)
+  var currentDate = new Date();
+  console.log(`${string} ${currentDate.getHours()} : ${currentDate.getMinutes()} : ${currentDate.getSeconds() < 10 ?  `0${currentDate.getSeconds()}` : currentDate.getSeconds()}`);
 };
 /////////////////////////////////////////////////////////////////////////// Excel sheet to json
 (async () => {
@@ -60,7 +65,7 @@ const time = (string , start , stop)=>{
   await page.goto('http://ukpbrvs045:50000/manufacturing/com/sap/me/wpmf/client/template.jsf?WORKSTATION=OPERATION_DEF&ACTIVITY_ID=DEF_OPER_POD');
 
   await page.waitFor(1000);
-  const Op = await page.$('input[value="OP_REPAIRS"]')
+  const Op = await page.$('input[value="OP_REPAIRS"]');
   await Op.click({clickCount:3});
   await page.waitFor(config.await);
   await Op.type('OP_HIGH_VOLTAGE');
@@ -88,11 +93,12 @@ const time = (string , start , stop)=>{
     await Complete.click();
     await page.waitFor(config.await);
     await page.waitFor(600);
+    percent(meterList.length,i+1);
   }
 
   await page.screenshot({path: 'example.png'});
   await browser.close();
   time('Finish time:');
-})();
+})().catch(e => console.error("Wrong Loggin or Password. CTR + C to close program"));
 }
  
